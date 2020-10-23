@@ -1,4 +1,4 @@
-module github.com/kutty_kumar/db_commons
+module github.com/kutty-kumar/db_commons
 
 go 1.15
 
