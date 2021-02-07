@@ -1,6 +1,6 @@
 package db_commons
 
-import "github.com/db_commons/model"
+import "github.com/kutty-kumar/db_commons/model"
 
 type BaseRepository interface {
 	GetById(id uint64, creator db_commons.EntityCreator) (error,db_commons.Base)

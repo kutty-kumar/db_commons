@@ -2,8 +2,8 @@ package db_commons
 
 import (
 	"errors"
-	"github.com/db_commons/model"
 	"github.com/jinzhu/gorm"
+	"github.com/kutty-kumar/db_commons/model"
 )
 
 type GORMRepository struct {
