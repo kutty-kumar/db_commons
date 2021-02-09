@@ -59,7 +59,7 @@ type Base interface {
 	GetDeletedAt() time.Time
 	ToDto() interface{}
 	FillProperties(dto interface{}) Base
-	Merge(other Base) Base
+	Merge(other interface{})
 }
 
 type Attribute interface {

@@ -4,3 +4,4 @@ go.sum
 *.iml
 .vcs
 .DS_STORE
+vendor/
