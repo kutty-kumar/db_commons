@@ -11,6 +11,13 @@ type GORMRepository struct {
 	factory db_commons.DomainFactory
 }
 
+func NewGORMRepository(db *gorm.DB, factory db_commons.DomainFactory) *GORMRepository {
+	return &GORMRepository{
+		db:      db,
+		factory: factory,
+	}
+}
+
 func (r *GORMRepository) GetById(id uint64, creator db_commons.EntityCreator) (error, db_commons.Base) {
 	entity := creator()
 	if err := r.db.Where("id = (?)", id).Find(entity).Error; err != nil {
@@ -27,7 +34,7 @@ func (r *GORMRepository) GetByExternalId(externalId string, creator db_commons.E
 	return nil, entity
 }
 
-func (r *GORMRepository) MultiGetByExternalId(externalIds[] string, creator func() []db_commons.Base) (error, []db_commons.Base) {
+func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator func() []db_commons.Base) (error, []db_commons.Base) {
 	entities := creator()
 	if err := r.db.Where("external_id IN (?)", externalIds).Find(entities).Error; err != nil {
 		return err, nil
@@ -49,7 +56,7 @@ func (r *GORMRepository) Update(externalId string, updatedBase db_commons.Base, 
 	}
 	entity.Merge(updatedBase)
 	if err := r.db.Table(string(entity.GetName())).Model(entity).Update(entity).Error; err != nil {
-		return  err, nil
+		return err, nil
 	}
 	return nil, entity
 }
