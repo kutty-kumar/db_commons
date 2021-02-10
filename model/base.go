@@ -1,6 +1,8 @@
 package db_commons
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	active   = 0
