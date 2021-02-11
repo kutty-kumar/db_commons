@@ -3,6 +3,7 @@ package db_commons
 import (
 	"errors"
 	"github.com/jinzhu/gorm"
+	"github.com/satori/go.uuid"
 )
 
 type GORMRepository struct {
@@ -41,7 +42,23 @@ func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator fun
 	return nil, entities
 }
 
-func (r *GORMRepository) Create(base Base) (error, Base) {
+func (r *GORMRepository) generateExternalId(base Base) (error, string){
+	if base.GetExternalId() == "" {
+		uid, err := uuid.NewV4()
+		if err != nil {
+			return err, ""
+		}
+		return nil, uid.String()
+	}
+	return nil, base.GetExternalId()
+}
+
+func (r *GORMRepository) Create(base Base, externalIdSetter ExternalIdSetter) (error, Base) {
+	err, externalId := r.generateExternalId(base)
+	if err != nil {
+		return err, nil
+	}
+	externalIdSetter(externalId, base)
 	if err := r.db.Create(base).Error; err != nil {
 		return err, nil
 	}

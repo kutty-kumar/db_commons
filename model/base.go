@@ -73,3 +73,5 @@ type AttributeWithLanguage interface {
 	Attribute
 	GetLanguage() string
 }
+
+type ExternalIdSetter func(externalId string, base Base) Base
