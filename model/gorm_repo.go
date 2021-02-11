@@ -42,12 +42,9 @@ func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator fun
 	return nil, entities
 }
 
-func (r *GORMRepository) generateExternalId(base Base) (error, string){
+func (r *GORMRepository) generateExternalId(base Base) (error, string) {
 	if base.GetExternalId() == "" {
-		uid, err := uuid.NewV4()
-		if err != nil {
-			return err, ""
-		}
+		uid := uuid.NewV4()
 		return nil, uid.String()
 	}
 	return nil, base.GetExternalId()
