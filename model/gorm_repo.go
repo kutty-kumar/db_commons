@@ -28,7 +28,7 @@ func (r *GORMRepository) GetById(id uint64, creator EntityCreator) (error, Base)
 
 func (r *GORMRepository) GetByExternalId(externalId string, creator EntityCreator) (error, Base) {
 	entity := creator()
-	if err := r.db.Where("external_id = ?", externalId).First(entity).Error; err != nil {
+	if err := r.db.Table("users").Where("external_id = ?", externalId).First(entity).Error; err != nil {
 		return err, nil
 	}
 	return nil, entity
