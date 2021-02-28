@@ -39,7 +39,7 @@ func (r *GORMRepository) populateRows(creator EntityCreator, rows *sql.Rows) (er
 	var models []*Base
 	for rows.Next() {
 		entity := creator()
-		err := rows.Scan(&entity)
+		entity, err := entity.FromSqlRow(rows)
 		if err != nil {
 			return err, nil
 		}

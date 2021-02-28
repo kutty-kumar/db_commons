@@ -1,6 +1,7 @@
 package db_commons
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -62,6 +63,7 @@ type Base interface {
 	ToDto() interface{}
 	FillProperties(dto interface{}) Base
 	Merge(other interface{})
+	FromSqlRow(rows *sql.Rows) (Base, error)
 }
 
 type Attribute interface {
