@@ -1,8 +1,8 @@
 package db_commons
 
 import (
+	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/satori/go.uuid"
 )
@@ -35,13 +35,26 @@ func (r *GORMRepository) GetByExternalId(externalId string, creator EntityCreato
 	return nil, entity
 }
 
-func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator func() (string, []*Base)) (error, []*Base) {
-	table, entities := creator()
-	fmt.Printf("entities <%v>\n", entities)
-	if err := r.db.Table(table).Where("external_id IN (?)", externalIds).Find(&entities).Error; err != nil {
+func (r *GORMRepository) populateRows(creator EntityCreator, rows *sql.Rows) (error, []*Base) {
+	var models []*Base
+	for rows.Next() {
+		entity := creator()
+		err := rows.Scan(&entity)
+		if err != nil {
+			return err, nil
+		}
+		models = append(models, &entity)
+	}
+	return nil, models
+}
+
+func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator EntityCreator) (error, []*Base) {
+	entity := creator()
+	rows, err := r.db.Table(string(entity.GetName())).Where("external_id IN (?)", externalIds).Rows()
+	if err != nil {
 		return err, nil
 	}
-	return nil, entities
+	return r.populateRows(creator, rows)
 }
 
 func (r *GORMRepository) generateExternalId(base Base) (error, string) {
