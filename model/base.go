@@ -64,6 +64,7 @@ type Base interface {
 	FillProperties(dto interface{}) Base
 	Merge(other interface{})
 	FromSqlRow(rows *sql.Rows) (Base, error)
+	SetExternalId(externalId string)
 }
 
 type Attribute interface {

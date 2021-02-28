@@ -12,6 +12,10 @@ type GORMRepository struct {
 	factory DomainFactory
 }
 
+func (r *GORMRepository) GetDb() *gorm.DB {
+	return r.db
+}
+
 func NewGORMRepository(db *gorm.DB, factory DomainFactory) *GORMRepository {
 	return &GORMRepository{
 		db:      db,
