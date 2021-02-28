@@ -35,20 +35,20 @@ func (r *GORMRepository) GetByExternalId(externalId string, creator EntityCreato
 	return nil, entity
 }
 
-func (r *GORMRepository) populateRows(creator EntityCreator, rows *sql.Rows) (error, []*Base) {
-	var models []*Base
+func (r *GORMRepository) populateRows(creator EntityCreator, rows *sql.Rows) (error, []Base) {
+	var models []Base
 	for rows.Next() {
 		entity := creator()
 		entity, err := entity.FromSqlRow(rows)
 		if err != nil {
 			return err, nil
 		}
-		models = append(models, &entity)
+		models = append(models, entity)
 	}
 	return nil, models
 }
 
-func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator EntityCreator) (error, []*Base) {
+func (r *GORMRepository) MultiGetByExternalId(externalIds [] string, creator EntityCreator) (error, []Base) {
 	entity := creator()
 	rows, err := r.db.Table(string(entity.GetName())).Where("external_id IN (?)", externalIds).Rows()
 	if err != nil {
