@@ -71,12 +71,12 @@ func (r *GORMRepository) generateExternalId(base Base) (error, string) {
 	return nil, base.GetExternalId()
 }
 
-func (r *GORMRepository) Create(base Base, externalIdSetter ExternalIdSetter) (error, Base) {
+func (r *GORMRepository) Create(base Base) (error, Base) {
 	err, externalId := r.generateExternalId(base)
 	if err != nil {
 		return err, nil
 	}
-	externalIdSetter(externalId, base)
+	r.GetExternalIdSetter()(externalId, base)
 	if err := r.db.Create(base).Error; err != nil {
 		return err, nil
 	}
@@ -97,4 +97,12 @@ func (r *GORMRepository) Update(externalId string, updatedBase Base, creator Ent
 
 func (r *GORMRepository) Search(params map[string]string, creator EntityCreator) (error, []Base) {
 	return errors.New("not implemented"), nil
+}
+
+func (r *GORMRepository) GetMapping(entityName DomainName) EntityCreator {
+	return r.factory.GetMapping(entityName)
+}
+
+func (r *GORMRepository) GetExternalIdSetter() ExternalIdSetter {
+	return r.externalIdSetter
 }
