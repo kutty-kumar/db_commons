@@ -1,37 +1,31 @@
 package db_commons
 
 type BaseSvc struct {
-	persistence      BaseRepository
-	domainName       DomainName
-	externalIdSetter ExternalIdSetter
-	entityCreator    EntityCreator
+	persistence BaseRepository
 }
 
-func (b *BaseSvc) Init(repo BaseRepository, domainName DomainName, setter ExternalIdSetter, creator EntityCreator) {
+func (b *BaseSvc) Init(repo BaseRepository) {
 	b.persistence = repo
-	b.domainName = domainName
-	b.externalIdSetter = setter
-	b.entityCreator = creator
 }
 
 func (b *BaseSvc) FindById(id uint64) (error, Base) {
-	return b.persistence.GetById(id, b.entityCreator)
+	return b.persistence.GetById(id)
 }
 
 func (b *BaseSvc) FindByExternalId(id string) (error, Base) {
-	return b.persistence.GetByExternalId(id, b.entityCreator)
+	return b.persistence.GetByExternalId(id)
 }
 
 func (b *BaseSvc) MultiGetByExternalId(ids []string) (error, []Base) {
-	return b.persistence.MultiGetByExternalId(ids, b.entityCreator)
+	return b.persistence.MultiGetByExternalId(ids)
 }
 
 func (b *BaseSvc) Create(base Base) (error, Base) {
-	return b.persistence.Create(base, b.externalIdSetter)
+	return b.persistence.Create(base)
 }
 
 func (b *BaseSvc) Update(id string, base Base) (error, Base) {
-	return b.persistence.Update(id, base, b.entityCreator)
+	return b.persistence.Update(id, base)
 }
 
 func (b *BaseSvc) GetPersistence() BaseRepository {
