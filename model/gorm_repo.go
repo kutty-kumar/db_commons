@@ -8,20 +8,16 @@ import (
 )
 
 type GORMRepository struct {
-	db               *gorm.DB
-	factory          DomainFactory
-	externalIdSetter func(externalId string, base Base) Base
+	db *gorm.DB
 }
 
 func (r *GORMRepository) GetDb() *gorm.DB {
 	return r.db
 }
 
-func NewGORMRepository(db *gorm.DB, factory DomainFactory, extIdSetter func(externalId string, base Base) Base) *GORMRepository {
+func NewGORMRepository(db *gorm.DB) *GORMRepository {
 	return &GORMRepository{
-		db:               db,
-		factory:          factory,
-		externalIdSetter: extIdSetter,
+		db: db,
 	}
 }
 
@@ -71,12 +67,12 @@ func (r *GORMRepository) generateExternalId(base Base) (error, string) {
 	return nil, base.GetExternalId()
 }
 
-func (r *GORMRepository) Create(base Base) (error, Base) {
+func (r *GORMRepository) Create(base Base, externalIdSetter ExternalIdSetter) (error, Base) {
 	err, externalId := r.generateExternalId(base)
 	if err != nil {
 		return err, nil
 	}
-	r.GetExternalIdSetter()(externalId, base)
+	externalIdSetter(externalId, base)
 	if err := r.db.Create(base).Error; err != nil {
 		return err, nil
 	}
@@ -97,12 +93,4 @@ func (r *GORMRepository) Update(externalId string, updatedBase Base, creator Ent
 
 func (r *GORMRepository) Search(params map[string]string, creator EntityCreator) (error, []Base) {
 	return errors.New("not implemented"), nil
-}
-
-func (r *GORMRepository) GetMapping(entityName DomainName) EntityCreator {
-	return r.factory.GetMapping(entityName)
-}
-
-func (r *GORMRepository) GetExternalIdSetter() ExternalIdSetter {
-	return r.externalIdSetter
 }
