@@ -15,13 +15,13 @@ type BaseRepository interface {
 }
 
 type BaseDao struct {
-	persistence BaseRepository
+	BaseRepository
 }
 
 func NewBaseDao(db *gorm.DB, factory DomainFactory,
 	externalIdSetter func(externalId string, base Base) Base) BaseDao {
 	persistence := NewGORMRepository(db, factory, externalIdSetter)
 	return BaseDao{
-		persistence: persistence,
+		persistence,
 	}
 }
