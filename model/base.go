@@ -2,7 +2,6 @@ package db_commons
 
 import (
 	"database/sql"
-	"github.com/kutty-kumar/db_commons/model"
 	"time"
 )
 
@@ -97,8 +96,8 @@ func (bd BaseDomain) GetId() uint64 {
 	return bd.Id
 }
 
-func (bd BaseDomain) GetStatus() db_commons.Status {
-	return db_commons.Status(bd.Status)
+func (bd BaseDomain) GetStatus() Status {
+	return Status(bd.Status)
 }
 
 func (bd BaseDomain) GetCreatedAt() time.Time {
