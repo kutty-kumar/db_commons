@@ -2,6 +2,7 @@ package db_commons
 
 import (
 	"database/sql"
+	"github.com/kutty-kumar/db_commons/model"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type Status int
 var statusMapping map[string]int
 var statusReverseMapping map[int]string
 
-func init(){
+func init() {
 	statusMapping = make(map[string]int)
 	statusReverseMapping = make(map[int]string)
 	statusMapping["active"] = active
@@ -40,7 +41,7 @@ type DomainFactory struct {
 	entityMappings map[DomainName]EntityCreator
 }
 
-func (d *DomainFactory) RegisterMapping(domainName DomainName, creator EntityCreator){
+func (d *DomainFactory) RegisterMapping(domainName DomainName, creator EntityCreator) {
 	d.entityMappings[domainName] = creator
 }
 
@@ -49,7 +50,7 @@ func (d *DomainFactory) GetMapping(domainName DomainName) EntityCreator {
 }
 
 func NewDomainFactory() *DomainFactory {
-	return  &DomainFactory{entityMappings: make(map[DomainName]EntityCreator)}
+	return &DomainFactory{entityMappings: make(map[DomainName]EntityCreator)}
 }
 
 type Base interface {
@@ -78,3 +79,36 @@ type AttributeWithLanguage interface {
 }
 
 type ExternalIdSetter func(externalId string, base Base) Base
+
+type BaseDomain struct {
+	ExternalId string `gorm:"type:varchar(100);unique_index;column:external_id"`
+	Id         uint64 `gorm:"primaryKey"`
+	CreatedAt  *time.Time
+	UpdatedAt  *time.Time
+	DeletedAt  *time.Time
+	Status     int
+}
+
+func (bd BaseDomain) GetExternalId() string {
+	return bd.ExternalId
+}
+
+func (bd BaseDomain) GetId() uint64 {
+	return bd.Id
+}
+
+func (bd BaseDomain) GetStatus() db_commons.Status {
+	return db_commons.Status(bd.Status)
+}
+
+func (bd BaseDomain) GetCreatedAt() time.Time {
+	return *bd.CreatedAt
+}
+
+func (bd BaseDomain) GetUpdatedAt() time.Time {
+	return *bd.UpdatedAt
+}
+
+func (bd BaseDomain) GetDeletedAt() time.Time {
+	return *bd.DeletedAt
+}

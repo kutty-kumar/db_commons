@@ -8,18 +8,20 @@ import (
 )
 
 type GORMRepository struct {
-	db      *gorm.DB
-	factory DomainFactory
+	db               *gorm.DB
+	factory          DomainFactory
+	externalIdSetter func(externalId string, base Base) Base
 }
 
 func (r *GORMRepository) GetDb() *gorm.DB {
 	return r.db
 }
 
-func NewGORMRepository(db *gorm.DB, factory DomainFactory) *GORMRepository {
+func NewGORMRepository(db *gorm.DB, factory DomainFactory, extIdSetter func(externalId string, base Base) Base) *GORMRepository {
 	return &GORMRepository{
-		db:      db,
-		factory: factory,
+		db:               db,
+		factory:          factory,
+		externalIdSetter: extIdSetter,
 	}
 }
 
