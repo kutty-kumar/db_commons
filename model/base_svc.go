@@ -1,33 +1,39 @@
 package db_commons
 
 type BaseSvc struct {
-	persistence BaseRepository
+	Persistence BaseRepository
 }
 
 func (b *BaseSvc) Init(repo BaseRepository) {
-	b.persistence = repo
+	b.Persistence = repo
 }
 
 func (b *BaseSvc) FindById(id uint64) (error, Base) {
-	return b.persistence.GetById(id)
+	return b.Persistence.GetById(id)
 }
 
 func (b *BaseSvc) FindByExternalId(id string) (error, Base) {
-	return b.persistence.GetByExternalId(id)
+	return b.Persistence.GetByExternalId(id)
 }
 
 func (b *BaseSvc) MultiGetByExternalId(ids []string) (error, []Base) {
-	return b.persistence.MultiGetByExternalId(ids)
+	return b.Persistence.MultiGetByExternalId(ids)
 }
 
 func (b *BaseSvc) Create(base Base) (error, Base) {
-	return b.persistence.Create(base)
+	return b.Persistence.Create(base)
 }
 
 func (b *BaseSvc) Update(id string, base Base) (error, Base) {
-	return b.persistence.Update(id, base)
+	return b.Persistence.Update(id, base)
 }
 
 func (b *BaseSvc) GetPersistence() BaseRepository {
-	return b.persistence
+	return b.Persistence
+}
+
+func NewBaseSvc(persistence BaseRepository) BaseSvc {
+	return BaseSvc{
+		Persistence: persistence,
+	}
 }
